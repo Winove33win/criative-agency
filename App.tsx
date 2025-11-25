@@ -6,6 +6,7 @@ import { Home } from './pages/Home';
 import { Services } from './pages/Services';
 import { Work } from './pages/Work';
 import { ProjectDetail } from './pages/ProjectDetail';
+import { Contact } from './pages/Contact';
 import { AdminLogin } from './pages/admin/AdminLogin';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { DataProvider } from './context/DataContext';
@@ -46,7 +47,7 @@ const App = () => {
             <Route path="/services" element={<><Navbar /><main className="flex-grow"><Services /></main><Footer /></>} />
             <Route path="/work" element={<><Navbar /><main className="flex-grow"><Work /></main><Footer /></>} />
             <Route path="/work/:slug" element={<><Navbar /><main className="flex-grow"><ProjectDetail /></main><Footer /></>} />
-            <Route path="/contact" element={<><Navbar /><main className="flex-grow"><div className="h-screen flex items-center justify-center text-3xl font-bold font-['Syne']">Contact Page Placeholder</div></main><Footer /></>} />
+            <Route path="/contact" element={<><Navbar /><main className="flex-grow"><Contact /></main><Footer /></>} />
 
             {/* Admin Routes - No Public Navbar */}
             <Route path="/admin" element={<AdminLogin />} />

@@ -6,17 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "start": "node app.js"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "express": "^5.1.0",
-    "framer-motion": "^12.23.24",
-    "lottie-react": "^2.4.0",
-    "lucide-react": "^0.554.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "@google/genai": "^1.30.0",
+    "lucide-react": "^0.554.0",
+    "framer-motion": "^12.23.24",
+    "lottie-react": "^2.4.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
