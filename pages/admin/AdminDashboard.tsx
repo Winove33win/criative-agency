@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useData, Project } from '../../context/DataContext';
-import { generateContentDescription, generateAgencyAsset } from '../../services/geminiService';
-import { Plus, Trash2, Edit, Save, Wand2, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Plus, Trash2, Edit, Save } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
   const { projects, services, deleteProject, deleteService, addProject, updateProject } = useData();
@@ -11,8 +10,6 @@ export const AdminDashboard: React.FC = () => {
   
   // Editor State (Simplified for demo)
   const [editForm, setEditForm] = useState<any>({});
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   const navigate = useNavigate();
 
@@ -58,35 +55,6 @@ export const AdminDashboard: React.FC = () => {
     setEditForm(newProject);
     setEditingId(newProject.id); // Triggers modal mode
   };
-
-  const handleMagicGen = async () => {
-    if (!editForm.client) return;
-    setIsGenerating(true);
-    const data = await generateContentDescription('project', editForm.client);
-    if (data) {
-      setEditForm((prev: any) => ({
-        ...prev,
-        challenge: data.challenge || prev.challenge,
-        solution: data.solution || prev.solution,
-        type: data.type || prev.type,
-        stats: data.stats || prev.stats
-      }));
-    }
-    setIsGenerating(false);
-  };
-
-  const handleImageGen = async () => {
-    if (!editForm.client) return;
-    setIsGeneratingImage(true);
-    try {
-        const prompt = `Futuristic, neon-noir high quality photography for a client named ${editForm.client} in the ${editForm.category} industry. Cinematic lighting.`;
-        const img = await generateAgencyAsset(prompt, '1K');
-        setEditForm((prev: any) => ({ ...prev, heroImg: img }));
-    } catch (e) {
-        console.error(e);
-    }
-    setIsGeneratingImage(false);
-  }
 
   return (
     <div className="min-h-screen bg-[#050505] text-white flex flex-col">
@@ -179,20 +147,12 @@ export const AdminDashboard: React.FC = () => {
                <div>
                  <label className="block text-zinc-400 text-sm mb-2 font-mono">CLIENT NAME</label>
                  <div className="flex gap-2">
-                    <input 
-                        type="text" 
-                        value={editForm.client} 
+                   <input
+                        type="text"
+                        value={editForm.client}
                         onChange={(e) => setEditForm({...editForm, client: e.target.value})}
                         className="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg focus:border-cyan-500 outline-none"
                     />
-                    <button 
-                        onClick={handleMagicGen} 
-                        disabled={isGenerating || !editForm.client}
-                        className="bg-purple-600/20 text-purple-400 border border-purple-500/50 px-4 rounded-lg hover:bg-purple-600/40 disabled:opacity-50"
-                        title="Auto-generate description"
-                    >
-                        {isGenerating ? <Loader2 className="animate-spin w-5 h-5"/> : <Wand2 className="w-5 h-5"/>}
-                    </button>
                  </div>
                </div>
 
@@ -221,24 +181,14 @@ export const AdminDashboard: React.FC = () => {
                  </div>
                </div>
 
-               <div>
-                 <label className="block text-zinc-400 text-sm mb-2 font-mono">HERO IMAGE URL</label>
-                 <div className="flex gap-2">
-                    <input 
-                        type="text" 
-                        value={editForm.heroImg} 
-                        onChange={(e) => setEditForm({...editForm, heroImg: e.target.value})}
-                        className="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg focus:border-cyan-500 outline-none text-xs"
-                    />
-                    <button 
-                        onClick={handleImageGen} 
-                        disabled={isGeneratingImage || !editForm.client}
-                        className="bg-cyan-600/20 text-cyan-400 border border-cyan-500/50 px-4 rounded-lg hover:bg-cyan-600/40 disabled:opacity-50"
-                        title="Generate Image with AI"
-                    >
-                        {isGeneratingImage ? <Loader2 className="animate-spin w-5 h-5"/> : <ImageIcon className="w-5 h-5"/>}
-                    </button>
-                 </div>
+                <div>
+                  <label className="block text-zinc-400 text-sm mb-2 font-mono">HERO IMAGE URL</label>
+                 <input
+                    type="text"
+                    value={editForm.heroImg}
+                    onChange={(e) => setEditForm({...editForm, heroImg: e.target.value})}
+                    className="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg focus:border-cyan-500 outline-none text-xs"
+                 />
                  {editForm.heroImg && <img src={editForm.heroImg} className="mt-2 w-full h-32 object-cover rounded-lg border border-white/10 opacity-50" />}
                </div>
 
