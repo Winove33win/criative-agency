@@ -1,96 +1,48 @@
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 /**
- * Generates an image using the Gemini 3 Pro Image Preview model.
- * Supports image size selection (1K, 2K, 4K).
+ * Offline-safe mock implementations replacing previous Gemini API calls.
+ * These helpers return deterministic content so the site works without API keys.
  */
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const generateAgencyAsset = async (
   prompt: string,
   size: '1K' | '2K' | '4K' = '1K'
 ): Promise<string> => {
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-image-preview',
-      contents: {
-        parts: [{ text: prompt }],
-      },
-      config: {
-        imageConfig: {
-          aspectRatio: "16:9", // Cinematic aspect ratio for agency work
-          imageSize: size,
-        },
-      },
-    });
+  // Simulate async work so UI loaders still behave nicely
+  await delay(600);
 
-    for (const part of response.candidates?.[0]?.content?.parts || []) {
-      if (part.inlineData) {
-        return `data:image/png;base64,${part.inlineData.data}`;
-      }
-    }
-    throw new Error("No image data received from Gemini.");
-  } catch (error) {
-    console.error("Image generation failed:", error);
-    throw error;
-  }
+  // Return a themed placeholder image so the app stays visual without external APIs
+  const encodedPrompt = encodeURIComponent(prompt || 'creative agency concept');
+  return `https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=${
+    size === '4K' ? 2400 : size === '2K' ? 1600 : 1200
+  }&q=80&blend=000&sat=-25&txt-align=bottom&txt-size=32&txt=${encodedPrompt}`;
 };
 
-/**
- * Uses Gemini 3 Pro Preview with Thinking Mode to generate complex strategic campaigns.
- */
 export const generateStrategicCampaign = async (brief: string): Promise<string> => {
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview',
-      contents: `You are a world-class creative strategist for a futurist marketing agency. 
-      Analyze the following client brief and provide a high-level, avant-garde campaign strategy. 
-      Include: 
-      1. Core Insight 
-      2. Creative Concept Name
-      3. Key Visual Direction
-      4. Activation Idea.
-      
-      Client Brief: ${brief}`,
-      config: {
-        thinkingConfig: {
-          thinkingBudget: 32768, 
-        },
-      },
-    });
-
-    return response.text || "Strategy generation incomplete.";
-  } catch (error) {
-    console.error("Strategy generation failed:", error);
-    throw error;
-  }
+  await delay(500);
+  const safeBrief = brief || 'Your brand brief';
+  return `Core Insight:\n- ${safeBrief} deserves a bold, tech-forward narrative that speaks to culture.\n\nCreative Concept Name:\n- Lumen Shift Initiative\n\nKey Visual Direction:\n- Neon gradients, kinetic typography, and holographic UI frames.\n\nActivation Idea:\n- Interactive microsite with live data visualizations and social AR filters.`;
 };
 
-/**
- * Generates structured content for a Project or Service based on a title/brief.
- */
-export const generateContentDescription = async (type: 'project' | 'service', title: string): Promise<any> => {
-  try {
-    const prompt = type === 'project' 
-      ? `Generate a JSON object for a portfolio case study titled "${title}". 
-         Fields required: 
-         - challenge (2 sentences, professional agency tone)
-         - solution (2 sentences, emphasizing tech and design)
-         - type (short string e.g., "Branding + AI")
-         - stats (short string e.g., "+200% ROI")`
-      : `Generate a short, punchy description (max 2 sentences) for a creative agency service titled "${title}". Tone: Futurism, High-energy.`;
+export const generateContentDescription = async (
+  type: 'project' | 'service',
+  title: string
+): Promise<any> => {
+  await delay(400);
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json"
-      }
-    });
-
-    return JSON.parse(response.text || "{}");
-  } catch (error) {
-    console.error("Content generation failed:", error);
-    return null;
+  if (type === 'project') {
+    return {
+      challenge: `${title} needed a distinctive presence that merges digital craft with human storytelling.`,
+      solution: 'We delivered a modular design system, immersive landing flow, and motion cues that signal innovation.',
+      type: 'Branding + Web',
+      stats: '+180% engagement uplift'
+    };
   }
+
+  return {
+    desc: `${title} delivered with a futurist, conversion-led approach tailored to fast-moving brands.`,
+    type: 'Service',
+    stats: '+95 NPS'
+  };
 };

@@ -58,13 +58,14 @@ const AICreativeLab: React.FC = () => {
           className="text-center mb-16"
         >
           <span className="text-cyan-400 font-mono text-sm tracking-widest uppercase mb-2 block">
-            Gemini Powered
+            Offline Demo
           </span>
           <h2 className="text-5xl md:text-7xl font-bold mb-4">
             AI <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Creative Lab</span>
           </h2>
           <p className="text-zinc-400 max-w-2xl mx-auto">
-            Experience our internal tools. Generate high-fidelity visual assets or utilize deep reasoning for campaign strategy.
+            Experience our internal tools with mock generators. Visuals and strategies are created locally so the experience works
+            without API keys.
           </p>
         </motion.div>
 
